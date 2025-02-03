@@ -2,6 +2,9 @@
 // In other words, a closure gives a function access to its outer scope. In JavaScript, closures are created every time a function is created,
 // at function creation time.
 
+// Lexical Scoping defines how variable names are resolved in nested functions: inner functions contain the scope of parent functions even if the parent function has returned.
+// The last part: "even if the parent function has returned" is called Closure.
+
 // // Outer Scope
 // var scope = 'outer'
 // function foo(){
@@ -139,48 +142,47 @@
 // call()
 // call()
 
-function once(func, context){
-    let ran
-    return function(...args){
-        if(func){
-            ran = func.call(context || this, ...args)
-            func = null
-        }
-        return ran
-    }
-}
+// function once(func, context){
+//     let ran
+//     return function(...args){
+//         if(func){
+//             ran = func.call(context || this, ...args)
+//             func = null
+//         }
+//         return ran
+//     }
+// }
 
-hello = once((a, b)=>console.log('Hello', a, b))
-hello(1, 2)
-hello()
+// hello = once((a, b)=>console.log('Hello', a, b))
+// hello(1, 2)
+// hello()
 
 // // Memoize using closures
 
-// function myMemoize(func, context){
-//     let cache = {};
-//     return function(){
-//         const argsCache = JSON.stringify(arguments)
-//         if(!cache[argsCache]){
-//             cache[argsCache] = func.apply(context || this, arguments)
-//         }
-//         return cache[argsCache]
-//     }
-// }
+function myMemoize(func, context){
+    let cache = {};
+    return function(){
+        const argsCache = JSON.stringify(arguments)
+        if(!cache[argsCache]){
+            cache[argsCache] = func.apply(context || this, arguments)
+        }
+        return cache[argsCache]
+    }
+}
 
-// function expensiveCalculation(val1, val2){
-//     for (let index = 0; index < 1000000; index++) {
-//     }
-//     return val1 * val2
-// }
+ expensiveCalculation = (val1, val2)=>{
+    for (let index = 0; index < 1000000; index++) {
+    }
+    return val1 * val2
+}
 
-// const m1 = myMemoize(expensiveCalculation)
-// console.time()
-// m1(2, 2)
-// console.timeEnd()
-// console.time()
-// m1(2, 2)
-// console.timeEnd()
-
+const m1 = myMemoize(expensiveCalculation, {})
+console.time()
+console.log(m1(2, 2)) 
+console.timeEnd()
+console.time()
+console.log(m1(2, 2)) 
+console.timeEnd()
 
 
 
